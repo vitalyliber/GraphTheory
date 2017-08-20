@@ -23,8 +23,8 @@ class GraphTheory
       if el[:value] == from
         if el[:value] != to
           if el[:edges].count <= 1
-            if not el[:edges].include? to
-              el.merge({edges: el[:edges].dup << to})
+            if not el[:edges].map{|el| el[:value]}.include? to
+              el.merge({edges: el[:edges].dup << {value: to, name: name} })
             else
               raise 'Vertex has already had the same edge'
             end
@@ -64,7 +64,7 @@ class GraphTheory
     while es.any? do
       new_edges = []
       es.each do |el|
-        new_edges.push *vertexes.find {|v| v[:value] == el }&.dig(:edges)
+        new_edges.push *vertexes.find {|v| v[:value] == el }&.dig(:edges)&.map{|el| el[:value]}
         red_vertexes.push *new_edges
         unless red_vertexes.uniq.length == red_vertexes.length
           es = []
